@@ -47,10 +47,8 @@ The skill expands casual language into complete technical specifications coverin
 
 ### Manual Installation
 
-Copy the `SKILL.md` file into your Claude skills directory:
-
-```
-~/.claude/skills/prompt-refiner/SKILL.md
+```bash
+mkdir -p ~/.claude/skills/prompt-refiner && curl -sL https://raw.githubusercontent.com/kurenn/prompt-refiner-skill/main/SKILL.md -o ~/.claude/skills/prompt-refiner/SKILL.md
 ```
 
 ## Benchmarks
