@@ -99,6 +99,61 @@ Common translations:
 
 When you spot a UI behavior described in plain language, always name the pattern explicitly in the spec and include the implementation details the user wouldn't think to mention (keyboard accessibility, mobile touch behavior, animation timing, state persistence).
 
+### Interaction Feedback Patterns
+This is the invisible layer that makes an app feel finished vs. broken. Non-technical users rarely mention it, but they *absolutely notice* when it's missing. Every user action that talks to a server or changes state needs feedback. Spec these for every form, button, and action in the app:
+
+**Form submission lifecycle:**
+- Button shows a loading spinner or "Submitting..." text while the request is in flight
+- Button is disabled during submission (prevents double-submit)
+- On success: show a toast/flash message ("Invoice saved!") and either redirect or reset the form
+- On error: show the error message inline or at the top of the form, preserve the user's input (don't clear the form), re-enable the button
+- On validation failure: highlight the specific fields that failed with inline error messages
+
+**Inline validation:**
+- Validate fields as the user types or on blur (not just on submit) — email format, password strength, required fields
+- Show a green checkmark or red error per field as feedback
+- Disable the submit button until required fields are valid (or let them submit and show errors — decide which pattern)
+
+**Destructive action confirmations:**
+- Delete, cancel, archive, and other irreversible actions need a confirmation step — either a modal dialog ("Are you sure? This cannot be undone.") or an undo toast pattern ("Item deleted. [Undo]")
+- Specify which approach to use for each destructive action
+
+**Toast / flash notifications:**
+- Transient success messages that auto-dismiss after 3-5 seconds
+- Error messages that persist until dismissed (don't auto-hide errors)
+- Position: top-right, top-center, or bottom — pick one and be consistent
+- Stack behavior if multiple toasts fire
+
+**Loading patterns — pick the right one for each context:**
+- **Skeleton screens**: placeholder shapes mimicking the content layout (best for lists, cards, dashboards)
+- **Spinners**: for short waits under 2-3 seconds (button actions, small fetches)
+- **Progress bars**: for operations with measurable progress (file uploads, batch processing)
+- **Optimistic UI**: update the UI immediately, roll back if the server rejects (best for toggling, liking, reordering)
+
+**State indicators:**
+- Buttons: default → hover → active → disabled → loading (define all states)
+- Form fields: empty → focused → filled → valid → invalid → disabled
+- Interactive elements need visible focus rings for keyboard navigation
+
+### State Preservation & Browser Behavior
+Users expect web apps to behave like web pages — the back button should work, refreshing shouldn't lose their work, and URLs should be shareable. These are almost never mentioned but cause real frustration when broken:
+
+- **Back button**: Does pressing back navigate as expected? (Single-page apps often break this.)
+- **Page refresh**: Does refreshing the page lose unsaved form data? Should it? (Consider auto-save or a "you have unsaved changes" warning.)
+- **Deep linking / URL structure**: Can a user bookmark or share a link to a specific page, tab, or filtered view? (e.g., `/invoices?status=unpaid` should work when pasted in a new browser.)
+- **Browser tab title**: Does the page title update to reflect the current view? (e.g., "Invoice #42 — MyApp" not just "MyApp" on every page.)
+- **Scroll position**: After navigating away and coming back, is scroll position preserved on list pages?
+
+### Data Export & Import
+"I want to download my data" or "can I export this?" actually implies:
+- Export format (CSV, PDF, Excel — which ones? all three?)
+- What data is included (all records? current filtered view? selected items?)
+- Column headers / field labels in the export
+- Date/number formatting in the export
+- Download trigger (button, link, menu option — where in the UI?)
+- Large dataset handling (generate in background, email when ready?)
+- Import: file upload with validation, preview before committing, error report for bad rows
+
 ### File Uploads & Media
 "Let users upload a file/photo/document" actually implies:
 - Accepted file types and size limits
@@ -206,9 +261,13 @@ Run through this checklist for every feature:
 - **Performance**: Will this need pagination? Caching? Lazy loading?
 - **Accessibility**: Can this be used with keyboard only? Does it have proper labels, focus management, contrast ratios? Are interactive elements announced to screen readers? (Users almost never ask for this, but it's always needed.)
 - **Security**: Is user input sanitized? Are there authorization checks? Rate limiting on forms?
+- **Interaction feedback**: Does every form have a loading state, success message, and error display? Are destructive actions confirmed? Do buttons show their state (hover, active, disabled, loading)?
+- **State preservation**: What happens on page refresh? Does the back button work? Can this page be bookmarked or shared via URL?
 
 ### Step 4: Determine Implementation Order
 Sequence the work so that foundational pieces come first and each step builds on the last. The AI assistant should be able to follow this order top to bottom without needing to jump around.
+
+**The Actionability Rule:** Every requirement described anywhere in this spec — interaction feedback, edge cases, state preservation, UI behaviors — must appear as a sub-step within a numbered implementation step. If a behavior is described in a descriptive section but has no corresponding step that says *what to build* and *where to put it*, the builder will skip it. Descriptive sections (Interaction Feedback, Edge Cases, State Preservation) are analysis tools for the refiner. Before finalizing the spec, dissolve every requirement from those sections into the implementation steps. An orphaned requirement — described but never assigned to a step — is worse than an absent one, because it creates a false sense of completeness.
 
 ### Step 5: Rate and Refine (Self-Assessment)
 After producing the spec, step back and critically evaluate your own work before presenting it to the user. This isn't optional — it's what separates a good spec from a great one.
@@ -220,6 +279,7 @@ After producing the spec, step back and critically evaluate your own work before
 - **Consistency** — Do the data model, user flows, and validation rules all agree with each other? If a field is required in the model, is there a validation rule for it? If a flow references an entity, does that entity exist in the data model?
 - **Proportionality** — Does the spec's complexity match the request? A "simple photo upload" shouldn't produce a 500-line spec. A full e-commerce platform shouldn't be two paragraphs.
 - **Translation Quality** — Did you actually expand the user's casual language into technical depth, or did you just reorganize what they already said? The value is in what you *added*, not what you *reformatted*.
+- **Implementation Coverage** — Cross-reference every behavioral requirement described in descriptive sections (Interaction Feedback, Edge Cases, State Preservation, UI/UX Notes) against the numbered implementation steps. For each behavior, verify a matching sub-step exists that specifies: (a) what to build, (b) the interaction pattern to implement (e.g., "disable the submit button and swap its text to 'Saving...' while the request is in flight" — not just "show loading state"), and (c) how to verify it works. If any requirement exists only as a description without a corresponding implementation step, it is orphaned and will not be built.
 
 **Detect areas of opportunity:**
 After rating, identify the weakest areas. Common gaps include:
@@ -229,6 +289,11 @@ After rating, identify the weakest areas. Common gaps include:
 - Mobile/responsive behavior not addressed for complex layouts
 - Missing UI patterns — did the user describe a behavior (like "hide and show the sidebar") that maps to a well-known pattern (collapsible sidebar with hamburger toggle) you should name and specify?
 - Assumptions that were made silently instead of being documented
+- Forms without a complete submission lifecycle (loading → success/error → next step)
+- Buttons and actions without all their states defined (hover, disabled, loading)
+- Destructive actions (delete, cancel) without a confirmation pattern
+- Pages that would break on refresh or lose their state
+- Orphaned requirements: behaviors described in Interaction Feedback, Edge Cases, or State Preservation that don't appear as sub-steps in the Implementation Order — these will be silently ignored by the builder
 
 **Implement the findings:**
 Don't just list what's wrong — fix it. Go back into the spec and fill the gaps, tighten the vague language, add the missing validation rules, and name the UI patterns. Then present the improved spec to the user. If the changes are significant, briefly note what you caught and fixed (e.g., "I noticed the data model was missing a status field for invoices that the user flow references, so I added it.").
@@ -326,6 +391,8 @@ The refined specification should use this structure. Not every section is needed
 **Honor stated tech preferences.** If the user says they use Rails and Tailwind, the spec should be written with Rails conventions in mind (RESTful routes, ActiveRecord models, Stimulus/Turbo patterns, etc.). Don't suggest React if they didn't ask for it.
 
 **Keep the spec self-contained.** An AI assistant should be able to read the refined spec top to bottom and build the application without needing to ask questions. That's the bar. If you find yourself writing "TBD" or "decide later," you haven't refined enough — either resolve it with a reasonable default (and add it to Assumptions) or flag it as a question for the user.
+
+**Describe the pattern, not just the wish.** When specifying a behavior, describe the *interaction pattern* concretely — not just the desired effect. "Show a loading state on submit" is a wish that a builder can interpret in a dozen ways (or skip entirely). "Disable the submit button and swap its text to 'Saving...' while the request is in flight; re-enable on completion" is a pattern any builder can implement regardless of framework. You don't need to name the exact API or attribute (that's the builder's job for their tech stack), but you must specify the pattern concretely enough that the builder knows *what* to build without guessing the intent.
 
 ## Mode-Specific Behavior
 
