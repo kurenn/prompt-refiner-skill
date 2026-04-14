@@ -51,17 +51,23 @@ The skill expands casual language into complete technical specifications coverin
 mkdir -p ~/.claude/skills/prompt-refiner && curl -sL https://raw.githubusercontent.com/kurenn/prompt-refiner-skill/main/SKILL.md -o ~/.claude/skills/prompt-refiner/SKILL.md
 ```
 
+### Update
+
+```bash
+curl -sL https://raw.githubusercontent.com/kurenn/prompt-refiner-skill/main/SKILL.md -o ~/.claude/skills/prompt-refiner/SKILL.md
+```
+
 ## Benchmarks
 
-Tested across 6 diverse scenarios (greenfield apps + feature requests):
+Tested across 10 diverse scenarios (greenfield, feature requests, multi-turn, over-engineering traps) using programmatic assertions and LLM-as-judge evaluations:
 
-| Metric | With Skill | Without Skill |
-|--------|-----------|---------------|
-| Assertion pass rate | **97.5%** | 54.4% |
-| Mode compliance | 100% | ~33% |
-| Structural completeness | 100% | ~50% |
+| Metric | Score |
+|--------|-------|
+| Assertion pass rate | **100%** (76/76) |
+| Avg judge score | **4.25/5** |
+| Composite score | **94.0%** |
 
-The skill's biggest advantages are in mode compliance (baseline ignores interactive/hybrid instructions entirely) and structural completeness (assumptions sections, validation rules, empty/loading states, self-assessment).
+Judges evaluate expansion quality (did it add meaningful depth?), actionability (are requirements in implementation steps?), and builder consumability (is the spec structured for an AI to follow?). The eval harness is in `evals/` — run it yourself with `python evals/run_evals.py`.
 
 ## Example
 
