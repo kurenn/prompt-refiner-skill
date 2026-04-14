@@ -23,19 +23,25 @@ The skill expands casual language into complete technical specifications coverin
 - **User authentication** — "users can sign up" becomes registration flow, verification, session management, password reset, validation rules
 - **Data display** — "show a list" becomes pagination, search, sorting, empty states, loading states, responsive layout
 - **UI patterns** — "I want the sidebar to hide and show" becomes collapsible sidebar with hamburger toggle, responsive breakpoints, animation, accessibility
-- **File uploads** — "upload a photo" becomes file type validation, size limits, storage strategy, image processing, fallback avatars
+- **Payments & billing** — "users can pay" becomes processor choice, plan tiers, trials, failed payment handling, cancellation, refunds
+- **Third-party integrations** — "connect to Stripe" becomes API key management, OAuth, webhooks, retry logic, sandbox vs. production
+- **Multi-tenancy** — "each team has a workspace" becomes data scoping, org model, invitations, tenant switching
+- **Email & messaging** — "send an email when X" becomes delivery service, templates, bounce handling, unsubscribe compliance
+- **File uploads** — "upload a photo" becomes file type validation, size limits, storage strategy, image processing
 - **Search & filtering** — "add a search bar" becomes scope, ranking, debounce, indexing, filter persistence
 - **Roles & permissions** — "admin vs. regular user" becomes role definitions, authorization checks, UI differences
-- **Real-time features** — "live updates" becomes WebSocket vs. polling, conflict resolution, connection loss handling
-- And more (data entry, notifications, user-generated content)
+- And more (data entry, notifications, real-time features, settings, user-generated content)
 
 ## Key Features
 
-- **Self-assessment loop** — Rates every spec on 5 dimensions (completeness, specificity, consistency, proportionality, translation quality), catches gaps, and fixes them before presenting to the user
+- **Self-assessment loop** — Rates every spec on 6 dimensions (completeness, specificity, consistency, proportionality, translation quality, implementation coverage), catches gaps, and fixes them before presenting to the user
+- **Input sophistication detection** — Calibrates expansion depth based on whether the input is non-technical, semi-technical, or technical
+- **Compression mechanism** — "Would the user notice on day 1?" test prevents over-engineering, with spec length targets per complexity level
+- **Builder Notes** — Distinguishes load-bearing requirements from polish, helping the AI builder prioritize
+- **Colocation principle** — Validation, error handling, and edge cases live inline with implementation steps, not in separate sections the builder might skip
 - **Feature request vs. greenfield detection** — Different approach for new apps vs. adding to existing codebases
 - **Security woven in** — Input sanitization, auth boundaries, rate limiting, CSRF — integrated naturally, not as a scary separate section
-- **Revision handling** — Guidance for iterating on specs when the user wants changes
-- **Worked examples** — Concrete before/after showing how casual requests expand into full specifications
+- **Complete worked example** — Full invoicing app spec showing the exact output format with all sections
 
 ## Installation
 
@@ -72,15 +78,15 @@ Judges evaluate expansion quality (did it add meaningful depth?), actionability 
 ## Example
 
 **User says:**
-> "I want a page where my team can submit expense reports and I can approve or reject them."
+> "I want a simple invoicing app where I can create invoices for clients, mark them as paid, and see which ones are overdue."
 
-**Prompt Refiner produces** a spec covering:
-- 3 data entities (User with roles, ExpenseReport with status lifecycle, LineItem with receipt attachment)
-- 2 detailed user flows (submission + approval)
-- Hidden requirements surfaced (rejected report resubmission, spending limits, partial approval, locking after submission)
-- UI patterns named (confirmation dialogs for approve/reject, dynamic line item forms, drag-and-drop receipt upload)
-- Validation rules, error handling, security considerations, accessibility
-- Self-assessment with ratings and issues caught
+**Prompt Refiner produces** a complete spec including:
+- **Builder Notes** — load-bearing requirements (status lifecycle, line item math, overdue detection) vs. polish (PDF generation, dashboard charts)
+- **3 data entities** (Client, Invoice with status lifecycle, LineItem with computed amounts)
+- **User flows** with every step specified (create → add line items → send → mark paid → view overdue)
+- **Implementation steps with colocated requirements** — validation, error handling, loading states, and confirmation dialogs appear as sub-steps within the feature that needs them, not in separate sections
+- **Compression applied** — Future Considerations captures deferred items (email delivery, tax calculation, recurring invoices) instead of bloating the initial spec
+- **Self-assessment** with 6 ratings and issues caught during self-review
 
 ## Contributing
 
