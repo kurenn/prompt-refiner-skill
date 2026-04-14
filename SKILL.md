@@ -35,105 +35,61 @@ The core skill here is *expansion* — taking a compact human intention and unpa
 
 ### User Authentication
 "Users can sign up" or "people need to log in" actually implies:
-- Registration flow (email/password? OAuth? both?)
-- Email verification or confirmation step
-- Login with session/token management
-- Password reset / forgot password flow
-- Input validation (email format, password strength)
-- Error messages for duplicate emails, wrong passwords
-- Redirect behavior after login/logout
-- "Remember me" or session persistence decision
+- Registration flow (email/password? OAuth? both?) with email verification
+- Login with session/token management, password reset flow
+- Input validation (email format, password strength) with specific error messages
+- Redirect behavior after login/logout, "remember me" decision
 
 ### Data Display
 "Show a list of items" actually implies:
-- Paginated or infinite scroll (and what page size?)
-- Search / filtering capability
-- Sorting (by which fields? default sort order?)
-- Empty state when no results exist
-- Loading state while data is fetched
-- Error state if the fetch fails
-- How each item is displayed (card? row? what fields are visible?)
-- Click behavior (link to detail page?)
-- Responsive layout (how does the list look on mobile?)
+- Pagination or infinite scroll (page size? default sort?)
+- Search, filtering, and sorting (by which fields?)
+- Data states: empty (zero results), loading (skeleton/spinner), error (fetch failed)
+- Item display format (card? row? visible fields?) with click behavior
+- Responsive layout for mobile
 
 ### Data Entry
 "Let users add/edit X" actually implies:
-- Form with specific fields and field types
-- Validation rules for each field (required? format? length?)
-- Error messages shown inline vs. at the top
-- What happens on successful submission (redirect? toast? stay on page?)
-- Edit vs. create — same form or different?
-- Unsaved changes warning if navigating away
-- Optimistic UI updates vs. waiting for server confirmation
+- Form fields with types, validation rules (required? format? length?), inline error messages
+- Submission behavior: success action (redirect/toast/reset), error recovery (preserve input)
+- Edit vs. create form (same or different?), unsaved changes warning
 
 ### User-Generated Content
 "Users can post/comment/review" actually implies:
-- Content length limits
-- Moderation considerations (profanity filter? approval queue?)
-- Who can see what (public? only logged-in users? only the author?)
-- Edit/delete permissions and time limits
-- Formatting options (plain text? rich text? markdown?)
-- Timestamps and relative time display
+- Content limits, formatting options (plain text? rich text? markdown?)
+- Visibility rules (public? logged-in only?) and edit/delete permissions with time limits
+- Moderation approach (filter? approval queue?) and timestamp display
 
 ### Notifications
 "Notify users when X happens" actually implies:
-- Notification channel (in-app? email? push? all three?)
-- Notification preferences / opt-out
-- Batching vs. real-time
-- Read/unread state
-- Notification history
+- Channel (in-app? email? push?), preferences/opt-out, batching vs. real-time
+- Read/unread state, notification history
 
 ### UI Behaviors & Layout Patterns
 Non-technical users describe *what they see happening* without knowing the pattern name. Your job is to name it, because the AI building it needs the right term to implement it correctly.
 
 Common translations:
-- "I want it to slide in from the side" → **Slide-out drawer / off-canvas panel** (with overlay, close on outside click, swipe-to-dismiss on mobile)
-- "I want the sidebar to hide and show" → **Collapsible sidebar with hamburger toggle** (responsive breakpoints, animation, state persistence, aria-expanded)
-- "Make it stick to the top when I scroll" → **Sticky header / navbar** (position: sticky, scroll threshold, shadow on scroll, compact variant)
-- "Show a popup when they click" → **Modal dialog** (focus trap, escape-to-close, backdrop overlay, prevent background scroll, accessibility: role="dialog")
-- "I want tabs at the top" → **Tabbed interface** (active state, URL-based tab persistence, keyboard navigation, responsive collapse to accordion on mobile)
-- "I want a dropdown menu" → **Dropdown/popover** (trigger behavior, positioning, close on outside click, keyboard navigation)
-- "I want it to look like a dashboard" → **Dashboard layout** (grid of cards/widgets, responsive reflow, data loading states per widget)
-- "I want a progress bar" → **Step indicator / wizard** (linear vs. non-linear, validation per step, back/forward, save partial progress)
-- "Drag things to reorder them" → **Drag-and-drop sortable list** (handle affordance, drop zone feedback, touch support, persistence of order)
+- "slide in from the side" → **Slide-out drawer** (overlay, close on outside click, swipe-to-dismiss on mobile)
+- "sidebar hide and show" → **Collapsible sidebar** (hamburger toggle, responsive breakpoints, state persistence)
+- "stick to the top" → **Sticky header** (scroll threshold, shadow on scroll, compact variant)
+- "show a popup" → **Modal dialog** (focus trap, escape-to-close, backdrop, prevent background scroll)
+- "tabs at the top" → **Tabbed interface** (URL-based persistence, keyboard nav, collapse to accordion on mobile)
+- "dropdown menu" → **Dropdown/popover** (positioning, close on outside click, keyboard nav)
+- "looks like a dashboard" → **Dashboard layout** (card grid, responsive reflow, per-widget loading states)
+- "progress bar" → **Step indicator / wizard** (validation per step, back/forward, save partial progress)
+- "drag to reorder" → **Drag-and-drop sortable list** (handle affordance, drop feedback, touch support)
 
-When you spot a UI behavior described in plain language, always name the pattern explicitly in the spec and include the implementation details the user wouldn't think to mention (keyboard accessibility, mobile touch behavior, animation timing, state persistence).
+When you spot a UI behavior described in plain language, always name the pattern explicitly and include implementation details the user wouldn't think to mention (keyboard accessibility, mobile behavior, state persistence).
 
 ### Interaction Feedback Patterns
-This is the invisible layer that makes an app feel finished vs. broken. Non-technical users rarely mention it, but they *absolutely notice* when it's missing. Every user action that talks to a server or changes state needs feedback. Spec these for every form, button, and action in the app:
+Every user action that talks to a server or changes state needs feedback. This is the invisible layer that makes an app feel finished vs. broken. Spec these for every form, button, and action:
 
-**Form submission lifecycle:**
-- Button shows a loading spinner or "Submitting..." text while the request is in flight
-- Button is disabled during submission (prevents double-submit)
-- On success: show a toast/flash message ("Invoice saved!") and either redirect or reset the form
-- On error: show the error message inline or at the top of the form, preserve the user's input (don't clear the form), re-enable the button
-- On validation failure: highlight the specific fields that failed with inline error messages
-
-**Inline validation:**
-- Validate fields as the user types or on blur (not just on submit) — email format, password strength, required fields
-- Show a green checkmark or red error per field as feedback
-- Disable the submit button until required fields are valid (or let them submit and show errors — decide which pattern)
-
-**Destructive action confirmations:**
-- Delete, cancel, archive, and other irreversible actions need a confirmation step — either a modal dialog ("Are you sure? This cannot be undone.") or an undo toast pattern ("Item deleted. [Undo]")
-- Specify which approach to use for each destructive action
-
-**Toast / flash notifications:**
-- Transient success messages that auto-dismiss after 3-5 seconds
-- Error messages that persist until dismissed (don't auto-hide errors)
-- Position: top-right, top-center, or bottom — pick one and be consistent
-- Stack behavior if multiple toasts fire
-
-**Loading patterns — pick the right one for each context:**
-- **Skeleton screens**: placeholder shapes mimicking the content layout (best for lists, cards, dashboards)
-- **Spinners**: for short waits under 2-3 seconds (button actions, small fetches)
-- **Progress bars**: for operations with measurable progress (file uploads, batch processing)
-- **Optimistic UI**: update the UI immediately, roll back if the server rejects (best for toggling, liking, reordering)
-
-**State indicators:**
-- Buttons: default → hover → active → disabled → loading (define all states)
-- Form fields: empty → focused → filled → valid → invalid → disabled
-- Interactive elements need visible focus rings for keyboard navigation
+- **Form submission lifecycle**: disable button + show "Saving..." while in flight → on success: toast + redirect/reset → on error: show message, preserve input, re-enable button → on validation failure: highlight failed fields inline
+- **Inline validation**: validate on blur or keystroke (not just submit), show per-field pass/fail indicators, decide whether to disable submit until valid
+- **Destructive actions**: delete/cancel/archive need either a confirmation modal ("This cannot be undone") or an undo toast pattern — specify which for each action
+- **Toast notifications**: success auto-dismisses (3-5s), errors persist until dismissed, pick one consistent position, handle stacking
+- **Loading patterns**: skeleton screens (lists/dashboards), spinners (short waits), progress bars (measurable operations like uploads), optimistic UI (toggles/reordering — update immediately, roll back on failure)
+- **Element states**: buttons need default/hover/active/disabled/loading states; form fields need empty/focused/filled/valid/invalid/disabled; all interactive elements need visible focus rings
 
 ### State Preservation & Browser Behavior
 Users expect web apps to behave like web pages — the back button should work, refreshing shouldn't lose their work, and URLs should be shareable. These are almost never mentioned but cause real frustration when broken:
@@ -156,43 +112,62 @@ Users expect web apps to behave like web pages — the back button should work, 
 
 ### File Uploads & Media
 "Let users upload a file/photo/document" actually implies:
-- Accepted file types and size limits
-- Client-side validation before upload (type, size, dimensions for images)
-- Upload UI pattern (click-to-browse, drag-and-drop zone, preview before submit)
-- Server-side validation (MIME type checking, re-encoding to strip metadata)
-- Storage strategy (local disk, cloud storage like S3, CDN)
-- Image processing (thumbnails, resizing, format conversion)
-- Progress indicator for large files
-- Fallback/placeholder when no file is uploaded (default avatar, document icon)
-- Deletion flow with confirmation
+- Accepted file types, size limits, client-side + server-side validation (MIME type checking)
+- Upload UI (click-to-browse, drag-and-drop, preview before submit), progress indicator
+- Storage strategy (local/S3/CDN), image processing (thumbnails, resizing)
+- Fallback placeholder when no file uploaded, deletion flow with confirmation
 
 ### Search & Filtering
-"I want users to find things" or "add a search bar" actually implies:
-- Search scope (which fields? which entities?)
-- Search behavior (instant/as-you-type vs. submit button)
-- Result ranking (relevance, recency, alphabetical)
-- Empty results state with helpful suggestions
-- Filter controls (dropdowns, checkboxes, date ranges)
-- Filter persistence (do filters survive page navigation?)
-- Performance (database indexing, debounce on keystroke search)
-- Highlight matching terms in results
+"Add a search bar" actually implies:
+- Search scope (which fields/entities?), behavior (instant vs. submit), result ranking
+- Empty results state, filter controls (dropdowns, checkboxes, date ranges), filter persistence
+- Performance (indexing, debounce), highlight matching terms
 
 ### Roles & Permissions
-"Different people see different things" or "admin vs. regular user" actually implies:
-- Role definitions (admin, editor, viewer, owner — which ones exist?)
-- What each role can see, create, edit, delete
-- How roles are assigned (self-service? admin-only?)
-- UI differences per role (hidden buttons, disabled fields, restricted navigation)
-- Authorization checks on both frontend and backend
-- What unauthorized users see (redirect to login? "access denied" page?)
+"Admin vs. regular user" actually implies:
+- Role definitions and what each can see/create/edit/delete
+- Role assignment method, UI differences per role (hidden buttons, disabled fields)
+- Authorization checks on frontend AND backend, unauthorized user experience
 
 ### Real-Time Features
-"I want live updates" or "show changes instantly" actually implies:
-- Technology choice (WebSockets, Server-Sent Events, polling)
-- What updates in real-time vs. what requires a refresh
-- Conflict resolution (two users editing the same thing)
-- Connection loss handling (reconnect behavior, stale data indicator)
-- Performance impact (how many concurrent connections?)
+"Live updates" actually implies:
+- Technology (WebSockets, SSE, polling), scope (what's real-time vs. refresh)
+- Conflict resolution for concurrent edits, connection loss handling, performance limits
+
+### Third-Party Integrations
+"Connect to Stripe" or "pull data from Google Sheets" actually implies:
+- API key management (environment variables, never client-side or committed to repo)
+- OAuth flow if user-facing (authorize → callback → token storage → refresh)
+- Webhook endpoints for async events (signature verification, idempotency, retry handling)
+- Sandbox/test vs. production environments, error handling for API downtime
+- Rate limit awareness, data mapping between external and internal schemas
+
+### Payments & Billing
+"Users can pay" or "subscription model" actually implies:
+- Payment processor choice (Stripe/Paddle), pricing tiers and plan definitions
+- Checkout flow (hosted vs. embedded), trial periods and conversion
+- Webhook handling for payment events (successful charge, failed payment, subscription canceled)
+- Failed payment retry/dunning, proration on plan changes, cancellation flow (immediate vs. end-of-period)
+- Refund policy and implementation, invoice/receipt generation, PCI compliance scope (use hosted fields to minimize)
+
+### Multi-Tenancy & Data Isolation
+"App for my company" or "each team has a workspace" actually implies:
+- Tenant/organization model, data scoping (every query filtered by tenant)
+- Invitation flow (email invite → accept → join), role system within tenant (owner/admin/member)
+- Tenant switching if users belong to multiple, subdomain or path-based routing
+- Per-tenant billing, data export per tenant
+
+### Email & Transactional Messaging
+"Send an email when X" actually implies:
+- Email delivery service (SendGrid/Postmark/SES), template system with variables
+- Async sending via background jobs, bounce and complaint handling
+- Unsubscribe mechanism (CAN-SPAM/GDPR compliance), delivery status tracking
+
+### Settings & Configuration
+"Users can customize their preferences" actually implies:
+- Settings data model (per-user, per-tenant, or global), sensible defaults for new users
+- Settings UI (form with save), which settings exist (notifications, display, privacy)
+- Immediate vs. delayed application of changes, settings validation
 
 The above are illustrative, not exhaustive. The point is: every casual phrase contains a tree of technical decisions. Your job is to walk that tree and either resolve each branch or flag it explicitly.
 
@@ -210,6 +185,18 @@ Before diving in, determine whether the user is describing a **new application**
 
 For feature requests, the output is narrower: focus on the data model *changes* (new fields, new tables, new relationships), the new user flow, and how it integrates with what exists. Don't re-spec the whole app — just the delta. Still include validation, error handling, edge cases, and the self-assessment for the new feature.
 
+## Input Sophistication Calibration
+
+Before expanding, assess the technical sophistication of the input and calibrate your depth accordingly:
+
+**Non-technical** — "I want an app that...", describes outcomes not implementation, no mention of specific technologies or patterns. → Full expansion. Explain all patterns. Surface all implicit requirements. Use the complete translation pattern library.
+
+**Semi-technical** — Mentions patterns ("CRUD", "status machine", "REST API"), names technologies ("Rails", "React"), uses developer terminology ("pagination", "webhook"). → Expand only what they didn't specify. Don't explain concepts they clearly know. Focus on gaps, edge cases, and consistency. If they said "status machine (draft → sent → paid)," don't re-derive the states — validate them and add what's missing (e.g., who can trigger each transition, what happens to related records on state change).
+
+**Technical** — Provides data models, references specific libraries, describes architecture. → Minimal expansion. Focus on consistency checking, missing edge cases, and the self-assessment. Don't patronize. The value you add is in what they overlooked, not in restating what they told you.
+
+This calibration directly affects the Proportionality rating in the self-assessment. An over-expanded spec for a technical user is as much a failure as an under-expanded one for a non-technical user.
+
 ## Security Considerations
 
 Non-technical users never mention security, but every spec should address it. Weave these into the relevant sections rather than bolting on a separate "security" section:
@@ -226,18 +213,166 @@ Don't make it scary or overwhelming — just ensure these basics are covered nat
 
 ## A Worked Example
 
-To illustrate how translation works in practice, here's a before/after:
+To illustrate the complete output, here's what the skill produces from a simple request. Note how requirements are colocated with implementation steps (not in separate sections), Builder Notes prioritize for the builder, and Future Considerations captures deferred items.
 
-**User says:** "I want a page where my team can submit expense reports and I can approve or reject them."
+**User says:** "I want a simple invoicing app where I can create invoices for clients, mark them as paid, and see which ones are overdue."
 
-**What they probably mean (and the spec should cover):**
+**Refined spec (One-Shot mode):**
 
-- **Entities**: User (with role: submitter/approver), ExpenseReport (status: draft/submitted/approved/rejected, submitted_by, reviewed_by, submitted_at, reviewed_at), LineItem (description, amount, category, receipt_attachment)
-- **Flows**: Submit flow (create report → add line items with optional receipt upload → submit for review → see confirmation), Approval flow (see pending reports → review line items and receipts → approve or reject with required comment → submitter gets notification)
-- **Hidden requirements the user didn't mention**: What happens to a rejected report? (Can they edit and resubmit?) Can a submitted report be edited? (Probably not — lock after submission.) Is there a spending limit that triggers extra approval? What categories exist for expenses? Can the approver partially approve? What does the submitter see while waiting? (Status indicator.) Email notifications on status change? Receipt file type/size limits?
-- **UI patterns**: The "approve/reject" action is a confirmation dialog (not a bare button) to prevent accidental clicks. The line items are a dynamic form (add/remove rows). The receipt upload needs drag-and-drop with preview.
+```
+# Simple Invoicing App
 
-That's the depth of expansion the skill should produce for every request.
+## Overview
+A personal invoicing tool for freelancers/small businesses to create invoices for clients,
+track payment status, and identify overdue invoices at a glance.
+
+## Builder Notes
+**Load-bearing requirements:**
+- Invoice status lifecycle (draft → sent → paid / overdue) — the core value
+- Line items with correct total calculation — math must be right
+- Overdue detection based on due date vs. current date
+
+**Polish requirements:**
+- PDF generation, email sending, dashboard charts
+- Inline validation feedback, skeleton loading states
+
+**Judgment calls:**
+- Currency formatting: default to USD, but use a locale-aware formatter so switching later is easy
+- When the user didn't specify multi-user: build as single-user, but scope DB queries by user_id anyway
+
+## Tech Stack
+Rails 7 with Hotwire (Turbo + Stimulus), PostgreSQL, Tailwind CSS.
+PDF generation: Prawn gem. No JavaScript framework needed — Hotwire handles interactivity.
+
+## Data Model
+
+### Client
+- name: string (required, max 100) — display name
+- email: string (required, valid email format) — for sending invoices
+- Relationships: has_many Invoices
+
+### Invoice
+- number: string (auto-generated, unique) — display identifier (e.g., INV-0001)
+- status: enum [draft, sent, paid, overdue] (default: draft)
+- issue_date: date (default: today)
+- due_date: date (required, must be >= issue_date)
+- notes: text (optional) — free-form notes to client
+- Relationships: belongs_to Client, has_many LineItems
+- Computed: total (sum of line_items.amount * quantity)
+
+### LineItem
+- description: string (required, max 200)
+- quantity: decimal (required, > 0, precision: 10, scale: 2)
+- unit_price: decimal (required, >= 0, precision: 10, scale: 2)
+- Relationships: belongs_to Invoice
+- Computed: amount (quantity * unit_price)
+
+## User Flows
+
+### Create & Send Invoice
+1. User clicks "New Invoice" → sees form with client dropdown and empty line items
+2. Selects existing client or clicks "New Client" (inline modal: name + email, both required)
+3. Adds line items (dynamic rows: description, quantity, unit_price). Running total updates live
+4. Sets due date, optional notes → clicks "Save as Draft"
+   - Validation: at least 1 line item, due_date >= today, client required
+   - On failure: highlight fields with inline errors, preserve all input
+   - On success: redirect to invoice detail page, flash "Invoice saved as draft"
+5. From detail page, clicks "Send" → confirmation: "Send invoice to client@email.com?"
+   - On confirm: status changes to sent, issue_date set to today. Flash "Invoice sent"
+
+### Mark as Paid
+1. From invoice list or detail page, user clicks "Mark Paid" on a sent/overdue invoice
+2. Confirmation dialog: "Mark Invoice INV-0042 as paid?" with confirm/cancel
+3. On confirm: status → paid, flash "Invoice marked as paid". Button disappears
+
+### View Overdue Invoices
+1. Dashboard shows counts: draft / sent / overdue / paid
+2. Overdue tab/filter shows all invoices where status=sent AND due_date < today
+3. Background job runs daily to flag overdue invoices (update status sent → overdue)
+
+## Features (Implementation Order)
+
+### Phase 1: Foundation
+1. **Client management**
+   - Scaffold Client model with name (required, max 100) and email (required, format validated)
+   - Index page: list all clients, sorted alphabetically. Empty state: "No clients yet — create one when you make your first invoice"
+   - Create form (also usable as inline modal from invoice form): validate on blur, disable submit button until required fields are filled, show "Saving..." while in flight, redirect to clients list on success with flash
+
+2. **Invoice CRUD with line items**
+   - Scaffold Invoice model with validations (due_date >= issue_date, status enum default: draft)
+   - LineItem model as nested resource. Dynamic form rows using Stimulus: "Add Line Item" appends a row, "Remove" deletes with fade-out. Minimum 1 line item enforced on submit
+   - Running total calculation: Stimulus controller recalculates on quantity/price change, displays formatted currency
+   - Save button: disable + "Saving..." while in flight → on success: redirect to detail view + flash → on error: show validation errors inline, preserve all input, re-enable button
+   - Invoice detail page: shows client info, line items table, total, status badge (color-coded: gray=draft, blue=sent, red=overdue, green=paid)
+
+### Phase 2: Core Functionality
+3. **Send invoice flow**
+   - "Send" button visible only on draft invoices. Triggers confirmation modal: "Send to {client.email}?"
+   - On confirm: update status to sent, set issue_date. Disable button + show spinner during request. Flash "Invoice sent" on success
+   - Future: actually send email (see Future Considerations). For now, just updates status
+
+4. **Mark as paid**
+   - "Mark Paid" button on sent/overdue invoices. Confirmation modal with invoice number
+   - On confirm: status → paid, disable button during request. Flash confirmation. Button replaced with "Paid" badge
+
+5. **Overdue detection**
+   - Scheduled job (daily via cron/whenever gem): find invoices where status=sent AND due_date < Date.today, update to overdue
+   - Dashboard summary cards: count per status, clicking a card filters the invoice list
+   - Invoice list: filterable by status (tabs or dropdown), sorted by due_date ascending. Empty state per filter: "No overdue invoices — nice!"
+
+### Phase 3: Polish
+6. **PDF generation**
+   - Generate PDF from invoice detail using Prawn. Layout: company header, client address block, line items table, total, notes, due date
+   - "Download PDF" button on invoice detail page. Loading spinner while generating
+
+7. **Dashboard refinements**
+   - Total revenue (sum of paid invoices) and outstanding amount (sum of sent + overdue)
+   - Responsive: cards stack vertically on mobile, table collapses to card view
+
+## Assumptions
+- Single-user app (no auth needed for v1, but queries scoped by user_id for future multi-user)
+- No actual email delivery in v1 — "Send" updates status only (email is a Future Consideration)
+- Currency: USD, formatted with commas and 2 decimal places
+- Invoice numbers auto-increment (INV-0001, INV-0002, etc.)
+- No tax calculation in v1
+- No partial payments — invoice is either paid in full or not
+
+## Out of Scope
+- Multi-user / team features
+- Recurring invoices
+- Multiple currencies
+- Payment gateway integration (Stripe, etc.)
+- Client portal (clients viewing their own invoices)
+
+## Future Considerations
+- Email delivery: integrate SendGrid/Postmark to actually email invoices as PDF attachments
+- Tax calculation: tax rate per line item or per invoice, with tax summary
+- Recurring invoices: template + schedule for repeat clients
+- Client portal: public link for clients to view and pay invoices
+- Notification batching: scroll position restoration on list pages
+- Browser tab title updates per page (e.g., "INV-0042 — Invoices")
+
+## Self-Assessment
+**Ratings** (1-5):
+- Completeness: 4/5
+- Specificity: 5/5
+- Consistency: 5/5
+- Proportionality: 5/5
+- Translation Quality: 4/5
+- Implementation Coverage: 5/5
+
+**Issues caught and fixed:**
+- Data model initially missing the notes field that the invoice form references — added it
+- "Mark Paid" flow didn't specify what replaces the button after payment — added "Paid" badge
+- Overdue detection needed a mechanism (background job) — specified cron schedule
+- Line items form needed a minimum count enforced on submit — added to validation
+
+**Remaining considerations:**
+- Does the user want actual email sending in v1, or is status-only acceptable?
+- Should overdue invoices trigger a notification/reminder, or just update silently?
+```
+
+Notice how every behavioral requirement (loading states, confirmation dialogs, error handling, empty states) appears as a sub-step within the implementation feature that needs it — not in a separate section. This is what actionable specs look like.
 
 ## The Refinement Process
 
@@ -263,6 +398,20 @@ Run through this checklist for every feature:
 - **Security**: Is user input sanitized? Are there authorization checks? Rate limiting on forms?
 - **Interaction feedback**: Does every form have a loading state, success message, and error display? Are destructive actions confirmed? Do buttons show their state (hover, active, disabled, loading)?
 - **State preservation**: What happens on page refresh? Does the back button work? Can this page be bookmarked or shared via URL?
+
+### Step 3.5: Compress to Essentials
+
+After expanding, pull back. Not every expanded requirement belongs in the initial build. For each requirement, apply this test: **"Would the user notice if this was missing on day 1?"**
+
+- **Keep** requirements that are structurally necessary (the app breaks without them), would cause data loss or user confusion if absent, or were explicitly requested.
+- **Defer** to a "Future Considerations" section requirements that only matter at scale (notification batching, advanced caching), are optimization-level polish (scroll position restoration, browser tab title updates), or exist only because they appeared on a checklist.
+
+**Spec length targets** — these are guidelines, not hard limits:
+- Simple requests (todo list, guestbook): under 150 lines
+- Medium complexity (invoice tracker, blog with auth): 150-300 lines
+- Complex (marketplace, SaaS with billing): 300-500 lines
+
+If a spec exceeds these ranges, compress before delivering. Move deferred items to Future Considerations rather than deleting them — the user can promote any back to scope.
 
 ### Step 4: Determine Implementation Order
 Sequence the work so that foundational pieces come first and each step builds on the last. The AI assistant should be able to follow this order top to bottom without needing to jump around.
@@ -310,6 +459,17 @@ The refined specification should use this structure. Not every section is needed
 ## Overview
 [1-3 sentences describing what this application does and who it's for]
 
+## Builder Notes
+**Load-bearing requirements** (get these wrong and the app breaks):
+- [3-5 requirements that are structurally critical to the core value proposition]
+
+**Polish requirements** (important for UX but the app functions without them):
+- [Requirements that can be simplified or deferred if time-constrained]
+
+**Judgment calls** (scenarios this spec doesn't fully cover):
+- [2-3 areas where the builder may encounter unspecified situations and should
+ use good judgment, with guidance on what to optimize for]
+
 ## Tech Stack
 [Explicit technology choices — framework, database, CSS approach, key libraries.
  If the user has preferences, honor them. If not, recommend and explain why.]
@@ -347,11 +507,13 @@ The refined specification should use this structure. Not every section is needed
 ### Phase 3: Polish & Secondary Features
 [...]
 
-## Validation Rules
-[Table or list of every validation rule across the app]
+## Validation Rules (Reference Summary)
+[Optional quick-reference table. Every rule here MUST also appear as a sub-step in the
+ implementation feature where it applies. This section is a lookup aid, not the source of truth.]
 
-## Error Handling
-[How errors should be displayed, logged, and recovered from]
+## Error Handling (Reference Summary)
+[Optional summary of error display patterns. Every error scenario MUST also be specified
+ inline within the implementation step that can trigger it.]
 
 ## UI/UX Notes
 [General layout guidance, responsive breakpoints, accessibility considerations]
@@ -363,6 +525,10 @@ The refined specification should use this structure. Not every section is needed
 ## Out of Scope
 [What this spec explicitly does NOT cover, to prevent scope creep]
 
+## Future Considerations
+[Requirements identified during expansion but deferred because they are not essential
+ for the initial build. Organized by priority so the user can promote any to current scope.]
+
 ## Self-Assessment
 **Ratings** (1-5):
 - Completeness: X/5
@@ -370,6 +536,7 @@ The refined specification should use this structure. Not every section is needed
 - Consistency: X/5
 - Proportionality: X/5
 - Translation Quality: X/5
+- Implementation Coverage: X/5
 
 **Issues caught and fixed:**
 - [Brief description of what was detected and corrected during self-review]
@@ -394,11 +561,16 @@ The refined specification should use this structure. Not every section is needed
 
 **Describe the pattern, not just the wish.** When specifying a behavior, describe the *interaction pattern* concretely — not just the desired effect. "Show a loading state on submit" is a wish that a builder can interpret in a dozen ways (or skip entirely). "Disable the submit button and swap its text to 'Saving...' while the request is in flight; re-enable on completion" is a pattern any builder can implement regardless of framework. You don't need to name the exact API or attribute (that's the builder's job for their tech stack), but you must specify the pattern concretely enough that the builder knows *what* to build without guessing the intent.
 
+**Design for builder consumption.** The spec will be read and executed by an AI coding assistant. Structure it for how LLMs process instructions:
+- **Colocate requirements with implementation steps.** Validation rules, error handling, and edge cases belong inline within the implementation step that builds the feature — not in separate sections the builder may lose track of. If you include standalone Validation Rules or Error Handling sections, treat them as reference summaries and ensure every rule ALSO appears as a sub-step in the implementation order.
+- **Make phases independently buildable.** Each phase in "Features (Implementation Order)" should be completable without reading later phases. No forward references. If Phase 3 needs a field, introduce it there — or mark it clearly in the Data Model as "Added in Phase 3."
+- **Respect spec length.** A 500-line spec that could be 200 lines wastes builder attention on padding. Simple apps: under 150 lines. Medium: 150-300. Complex: 300-500. If you're over these targets, compress (see Step 3.5).
+
 ## Mode-Specific Behavior
 
 ### One-Shot Mode
 1. Read the user's description carefully
-2. Produce the full refined spec
+2. Produce the full refined spec. Colocate all behavioral requirements (validation, error handling, loading states, confirmations, edge cases) as sub-steps within the implementation features that need them — not in separate sections. Refer to the worked example.
 3. **Run the self-assessment** (Step 5) — rate your spec, find the gaps, fix them in-place
 4. Present the improved spec with a brief "Self-Assessment" summary showing your ratings and what you caught/fixed
 5. At the end, include a "Questions for Consideration" section with 3-5 things the user might want to change
@@ -408,7 +580,7 @@ The refined specification should use this structure. Not every section is needed
 1. Acknowledge the request and summarize your understanding in 2-3 sentences
 2. Ask 3-4 high-impact questions (the ones whose answers most change the architecture)
 3. After answers, ask 2-3 follow-up questions about the next most impactful unknowns
-4. Produce the full refined spec
+4. Produce the full refined spec. Colocate all behavioral requirements as sub-steps within implementation features — not in separate sections. Refer to the worked example.
 5. **Run the self-assessment** (Step 5) — rate, detect, and fix before presenting
 6. Present the improved spec with the "Self-Assessment" summary
 7. Ask if anything needs revision
@@ -417,7 +589,7 @@ The refined specification should use this structure. Not every section is needed
 1. Read the user's description
 2. Produce a draft spec immediately (marking assumptions clearly)
 3. After the draft, present 3-5 targeted questions about the biggest ambiguities
-4. After answers, produce the final spec with revisions incorporated
+4. After answers, produce the **complete final spec** — not a patch on the draft, but the full spec rewritten with revisions incorporated. The final spec must follow the colocation principle: every validation rule, error handling pattern, loading state, confirmation dialog, and edge case must appear as a concrete sub-step within the implementation feature that needs it. Do NOT put these in separate Validation Rules or Error Handling sections — colocate them. Refer to the worked example for the correct structure.
 5. **Run the self-assessment** (Step 5) — rate the final spec, detect gaps, implement fixes
 6. Present the improved spec with the "Self-Assessment" summary showing what was caught and corrected
 

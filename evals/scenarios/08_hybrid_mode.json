@@ -1,0 +1,15 @@
+{
+  "id": "08_hybrid_mode",
+  "name": "Hybrid Mode — Job Board",
+  "input": "I want a job board where companies can post jobs and people can apply.",
+  "mode": "hybrid",
+  "expected_complexity": "medium",
+  "user_sophistication": "non-technical",
+  "mock_answers": "Companies should pay to post jobs — maybe $50/post or a monthly plan. Applicants apply for free. Yes, companies should see all applicants in one place. Applicants should be able to upload a resume. No need for messaging yet, just email notifications.",
+  "assertions": [
+    "has_overview", "has_data_model", "has_user_flows",
+    "has_features", "has_assumptions", "has_self_assessment",
+    "mode_hybrid_compliant"
+  ],
+  "judge_dimensions": ["expansion_quality", "actionability", "consumability"]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "03_feature_request",
+  "name": "Feature Request — Bookstore Reserve",
+  "input": "I have a Rails app for managing a bookstore. I need to add a feature where customers can reserve books and pick them up in-store.",
+  "mode": "hybrid",
+  "expected_complexity": "medium",
+  "user_sophistication": "non-technical",
+  "mock_answers": "The app uses Rails 7 with Hotwire, PostgreSQL, and Tailwind. We have Book, Customer, and Order models already. The UI has a book catalog page and a customer dashboard. We use Devise for auth.",
+  "assertions": [
+    "has_overview", "has_data_model", "has_user_flows",
+    "has_features", "has_assumptions", "has_self_assessment",
+    "mode_hybrid_compliant"
+  ],
+  "judge_dimensions": ["expansion_quality", "actionability", "consumability"]
+}

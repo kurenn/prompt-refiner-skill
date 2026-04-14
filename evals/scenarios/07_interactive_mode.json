@@ -1,0 +1,13 @@
+{
+  "id": "07_interactive_mode",
+  "name": "Interactive Mode — Bakery App",
+  "input": "I want to make some kind of app for managing my small bakery.",
+  "mode": "interactive",
+  "expected_complexity": "medium",
+  "user_sophistication": "non-technical",
+  "mock_answers": "I need to track daily orders, what we need to bake each morning, and ingredient inventory. It's just me and two employees. We take orders by phone and in person. I'd like to see what's selling best each week.",
+  "assertions": [
+    "mode_interactive_compliant"
+  ],
+  "judge_dimensions": ["expansion_quality"]
+}

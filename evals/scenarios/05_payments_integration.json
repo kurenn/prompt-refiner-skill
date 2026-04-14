@@ -1,0 +1,15 @@
+{
+  "id": "05_payments_integration",
+  "name": "SaaS with Payments",
+  "input": "I want a SaaS where users can subscribe to monthly plans, connect their Stripe account, and manage billing.",
+  "mode": "hybrid",
+  "expected_complexity": "complex",
+  "user_sophistication": "non-technical",
+  "mock_answers": "Three tiers: free, pro ($29/mo), and enterprise ($99/mo). Free tier gets 3 projects, pro gets unlimited, enterprise gets team features. Yes, users should be able to upgrade/downgrade anytime. Credit card only for now. Send email receipts after each charge.",
+  "assertions": [
+    "has_overview", "has_tech_stack", "has_data_model", "has_user_flows",
+    "has_features", "has_assumptions", "has_self_assessment",
+    "mode_hybrid_compliant"
+  ],
+  "judge_dimensions": ["expansion_quality", "actionability", "consumability"]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "02_greenfield_complex",
+  "name": "Complex Greenfield — Marketplace",
+  "input": "I want to build a marketplace where people can list handmade crafts for sale, buyers can purchase them, and sellers get paid. Buyers should be able to leave reviews.",
+  "mode": "one-shot",
+  "expected_complexity": "complex",
+  "user_sophistication": "non-technical",
+  "assertions": [
+    "has_overview", "has_tech_stack", "has_data_model", "has_user_flows",
+    "has_features", "has_assumptions", "has_self_assessment",
+    "has_validation_rules", "has_error_handling",
+    "mode_one_shot_compliant", "proportional_length"
+  ],
+  "judge_dimensions": ["expansion_quality", "actionability", "consumability"]
+}

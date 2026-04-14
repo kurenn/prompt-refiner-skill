@@ -1,0 +1,14 @@
+{
+  "id": "06_multi_tenant",
+  "name": "Multi-Tenant — Department Workspaces",
+  "input": "Build an app for my company where each department has its own workspace with separate projects and members.",
+  "mode": "one-shot",
+  "expected_complexity": "complex",
+  "user_sophistication": "non-technical",
+  "assertions": [
+    "has_overview", "has_tech_stack", "has_data_model", "has_user_flows",
+    "has_features", "has_assumptions", "has_self_assessment",
+    "mode_one_shot_compliant"
+  ],
+  "judge_dimensions": ["expansion_quality", "actionability", "consumability"]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "04_semi_technical",
+  "name": "Semi-Technical — Invoice CRUD",
+  "input": "I need CRUD for invoices with a status machine (draft -> sent -> paid -> overdue), line items, and PDF generation. Rails 7 + Hotwire.",
+  "mode": "one-shot",
+  "expected_complexity": "medium",
+  "user_sophistication": "semi-technical",
+  "assertions": [
+    "has_overview", "has_data_model", "has_user_flows",
+    "has_features", "has_assumptions", "has_self_assessment",
+    "mode_one_shot_compliant", "proportional_length"
+  ],
+  "judge_dimensions": ["expansion_quality", "actionability", "consumability"]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "10_over_engineering_trap",
+  "name": "Over-Engineering Trap — Guestbook",
+  "input": "I want a simple page where visitors can leave a message for me, like a guestbook.",
+  "mode": "one-shot",
+  "expected_complexity": "simple",
+  "user_sophistication": "non-technical",
+  "assertions": [
+    "has_overview", "has_data_model", "has_user_flows",
+    "has_features", "has_assumptions", "has_self_assessment",
+    "mode_one_shot_compliant", "proportional_length",
+    "no_over_engineering"
+  ],
+  "judge_dimensions": ["expansion_quality", "actionability", "consumability"]
+}
