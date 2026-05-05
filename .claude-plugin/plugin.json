@@ -1,0 +1,15 @@
+{
+  "name": "prompt-refiner",
+  "version": "1.1.0",
+  "description": "Translates casual application requests into detailed, step-by-step technical specifications that AI coding assistants can execute faithfully. Useful as a one-shot refinement at the top of any feature or build task.",
+  "author": {
+    "name": "Abraham Kuri",
+    "email": "abkuri88@gmail.com",
+    "url": "https://github.com/kurenn"
+  },
+  "homepage": "https://github.com/kurenn/prompt-refiner-skill",
+  "repository": "https://github.com/kurenn/prompt-refiner-skill",
+  "license": "MIT",
+  "keywords": ["prompt-engineering", "claude-code", "specification", "ai-agents"],
+  "skills": "./skills"
+}
