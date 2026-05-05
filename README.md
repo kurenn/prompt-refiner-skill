@@ -54,13 +54,6 @@ claude plugin install prompt-refiner@kurenn        # one-time install
 
 Restart your Claude Code session and `/prompt-refiner` appears in the slash menu.
 
-Pull updates with:
-
-```bash
-claude plugin marketplace update kurenn
-claude plugin update prompt-refiner
-```
-
 ### Claude Desktop (Cowork)
 
 1. Download `prompt-refiner.skill` from the [Releases](../../releases) page
@@ -80,6 +73,35 @@ curl -sL https://raw.githubusercontent.com/kurenn/prompt-refiner-skill/main/skil
 ```
 
 > **Note** as of 1.1.0 the skill content moved from `/SKILL.md` to `/skills/prompt-refiner/SKILL.md` to follow the Claude Code plugin layout. The manual install URLs above reflect the new path.
+
+## Updating
+
+When a new version is released, pull it via the marketplace:
+
+```bash
+# Refresh the marketplace cache (picks up new versions from marketplace.json)
+claude plugin marketplace update kurenn
+
+# Update prompt-refiner to the latest released version
+claude plugin update prompt-refiner
+```
+
+Restart your Claude Code session after updating so the slash menu picks up the new version.
+
+Verify which version you're on:
+
+```bash
+claude plugin list | grep -A3 prompt-refiner@kurenn
+```
+
+To pin to an older version (e.g. for rollback while debugging a regression), clone the tag locally and load via `--plugin-dir`:
+
+```bash
+git clone https://github.com/kurenn/prompt-refiner-skill --branch v1.1.0 ~/workspace/prompt-refiner-1.1.0
+claude --plugin-dir ~/workspace/prompt-refiner-1.1.0
+```
+
+For the **manual install** path (without plugin), refresh by re-running the curl command from the Installation section.
 
 ## Benchmarks
 
