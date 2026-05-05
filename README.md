@@ -45,23 +45,41 @@ The skill expands casual language into complete technical specifications coverin
 
 ## Installation
 
+### Recommended — via the kurenn marketplace (Claude Code)
+
+```bash
+claude plugin marketplace add kurenn/marketplace   # one-time per user
+claude plugin install prompt-refiner@kurenn        # one-time install
+```
+
+Restart your Claude Code session and `/prompt-refiner` appears in the slash menu.
+
+Pull updates with:
+
+```bash
+claude plugin marketplace update kurenn
+claude plugin update prompt-refiner
+```
+
 ### Claude Desktop (Cowork)
 
 1. Download `prompt-refiner.skill` from the [Releases](../../releases) page
 2. Open Claude Desktop
 3. Drag the `.skill` file into a conversation, or place it in your skills directory
 
-### Manual Installation
+### Manual install (legacy, for users not on Claude Code 2.69+)
 
 ```bash
-mkdir -p ~/.claude/skills/prompt-refiner && curl -sL https://raw.githubusercontent.com/kurenn/prompt-refiner-skill/main/SKILL.md -o ~/.claude/skills/prompt-refiner/SKILL.md
+mkdir -p ~/.claude/skills/prompt-refiner && curl -sL https://raw.githubusercontent.com/kurenn/prompt-refiner-skill/main/skills/prompt-refiner/SKILL.md -o ~/.claude/skills/prompt-refiner/SKILL.md
 ```
 
-### Update
+To update later:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/kurenn/prompt-refiner-skill/main/SKILL.md -o ~/.claude/skills/prompt-refiner/SKILL.md
+curl -sL https://raw.githubusercontent.com/kurenn/prompt-refiner-skill/main/skills/prompt-refiner/SKILL.md -o ~/.claude/skills/prompt-refiner/SKILL.md
 ```
+
+> **Note** as of 1.1.0 the skill content moved from `/SKILL.md` to `/skills/prompt-refiner/SKILL.md` to follow the Claude Code plugin layout. The manual install URLs above reflect the new path.
 
 ## Benchmarks
 
